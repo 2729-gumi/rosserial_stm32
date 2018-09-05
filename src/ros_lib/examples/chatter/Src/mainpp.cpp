@@ -26,10 +26,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
   nh.getHardware()->reset_rbuf();
 }
 
-volatile uint32_t ovf_count = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if (htim->Instance == TIM2) {
-    ovf_count++;
+    nh.getHardware()->timOvfCallback();
   }
 }
 

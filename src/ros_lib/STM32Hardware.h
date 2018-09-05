@@ -39,8 +39,6 @@
 #include "stm32f3xx_hal_uart.h"
 #include "stm32f3xx_hal_tim.h"
 
-extern volatile uint32_t ovf_count;
-
 class STM32Hardware {
   protected:
     TIM_HandleTypeDef *htim;
@@ -54,6 +52,8 @@ class STM32Hardware {
     const static uint16_t tbuflen = 1024;
     uint8_t tbuf[tbuflen];
     uint32_t twind, tfind;
+
+    uint32_t ovf_count;
 
   public:
 
@@ -114,6 +114,10 @@ class STM32Hardware {
       }
 
       flush();
+    }
+
+    void timOvfCallback(){
+      ovf_count++;
     }
 
     unsigned long time(){
