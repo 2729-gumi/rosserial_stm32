@@ -9,6 +9,9 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 
+extern TIM_HandleTypeDef htim2;
+extern UART_HandleTypeDef huart2;
+
 ros::NodeHandle nh;
 
 std_msgs::String str_msg;
@@ -23,8 +26,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
   nh.getHardware()->reset_rbuf();
 }
 
+volatile uint32_t ovf_count = 0;
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+  if (htim->Instance == TIM2) {
+    ovf_count++;
+  }
+}
+
 void setup(void)
 {
+  nh.getHardware()->setHardwareHandler(&htim2, &huart2);
   nh.initNode();
   nh.advertise(chatter);
 }
